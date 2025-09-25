@@ -24,8 +24,9 @@ app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
 // Health
+let mongoConnected = false;
 app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok' });
+  res.json({ status: 'ok', db: mongoConnected ? 'connected' : 'connecting' });
 });
 
 // Socket.io basic wiring
@@ -44,18 +45,23 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 const PORT = process.env.PORT || 4000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/blog';
 
+server.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`API listening on http://localhost:${PORT}`);
+  // eslint-disable-next-line no-console
+  console.log('Connecting to MongoDB...');
+});
+
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    server.listen(PORT, () => {
-      // eslint-disable-next-line no-console
-      console.log(`API listening on http://localhost:${PORT}`);
-    });
+    mongoConnected = true;
+    // eslint-disable-next-line no-console
+    console.log('MongoDB connected');
   })
   .catch((err) => {
     // eslint-disable-next-line no-console
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1);
+    console.error('Failed to connect to MongoDB:', err?.message || err);
   });
 
 
