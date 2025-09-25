@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 import { Server as SocketIOServer } from 'socket.io';
 import dotenv from 'dotenv';
+import { User, Article, Comment } from './models';
 
 dotenv.config();
 console.log('Environment loaded:', {
@@ -32,6 +33,26 @@ app.use(morgan('dev'));
 let mongoConnected = false;
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', db: mongoConnected ? 'connected' : 'connecting' });
+});
+
+// Test endpoint to verify models
+app.get('/api/test-models', async (_req: Request, res: Response) => {
+  try {
+    const userCount = await User.countDocuments();
+    const articleCount = await Article.countDocuments();
+    const commentCount = await Comment.countDocuments();
+    
+    res.json({
+      models: 'loaded',
+      counts: {
+        users: userCount,
+        articles: articleCount,
+        comments: commentCount
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Models not accessible' });
+  }
 });
 
 // Socket.io basic wiring
