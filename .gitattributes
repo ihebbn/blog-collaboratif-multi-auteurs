@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+# Treat common binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+
+# Ensure shell/batch scripts use LF in repo
+*.sh text eol=lf
+*.bash text eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+
