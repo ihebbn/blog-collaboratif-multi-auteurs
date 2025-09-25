@@ -8,6 +8,11 @@ import { Server as SocketIOServer } from 'socket.io';
 import dotenv from 'dotenv';
 
 dotenv.config();
+console.log('Environment loaded:', {
+  PORT: process.env.PORT,
+  MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT SET',
+  NODE_ENV: process.env.NODE_ENV
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -50,6 +55,28 @@ server.listen(PORT, () => {
   console.log(`API listening on http://localhost:${PORT}`);
   // eslint-disable-next-line no-console
   console.log('Connecting to MongoDB...');
+  // Show redacted connection string to verify .env is loaded and host is correct
+  try {
+    const redacted = String(MONGO_URI).replace(/\/\/([^:]+):([^@]+)@/, '//$1:***@');
+    // eslint-disable-next-line no-console
+    console.log('Mongo URI (redacted):', redacted);
+  } catch (_) {
+    // ignore
+  }
+});
+
+// Connection event diagnostics
+mongoose.connection.on('connected', () => {
+  // eslint-disable-next-line no-console
+  console.log('Mongoose event: connected');
+});
+mongoose.connection.on('error', (err) => {
+  // eslint-disable-next-line no-console
+  console.error('Mongoose event: error ->', err?.message || err);
+});
+mongoose.connection.on('disconnected', () => {
+  // eslint-disable-next-line no-console
+  console.log('Mongoose event: disconnected');
 });
 
 mongoose

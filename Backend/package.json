@@ -1,16 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "private": true,
   "main": "index.js",
+  "description": "MEAN blog backend",
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
