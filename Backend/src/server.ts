@@ -10,6 +10,7 @@ import { User, Article, Comment } from './models';
 import authRoutes from './routes/auth';
 import articleRoutes from './routes/articles';
 import uploadRoutes from './routes/upload';
+import adminRoutes from './routes/admin';
 import { apiLimiter, securityLogger } from './middleware/security';
 
 dotenv.config();
@@ -49,6 +50,7 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Test endpoint to verify models
 app.get('/api/test-models', async (_req: Request, res: Response) => {

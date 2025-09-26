@@ -104,7 +104,21 @@ export const getArticle = async (req: Request, res: Response) => {
 export const createArticle = async (req: Request, res: Response) => {
   try {
     const { title, content, excerpt, tags, imageUrl, status = 'draft' } = req.body;
-    const authorId = req.user!.userId;
+    
+    // Debug logging
+    console.log('Create article request:', { 
+      body: req.body, 
+      user: req.user,
+      hasUser: !!req.user,
+      tagsType: typeof tags,
+      tagsValue: tags
+    });
+    
+    if (!req.user) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+    
+    const authorId = req.user.userId;
 
     // Validation
     if (!title || !content) {
@@ -113,13 +127,23 @@ export const createArticle = async (req: Request, res: Response) => {
       });
     }
 
+    // Process tags safely
+    let processedTags: string[] = [];
+    if (tags) {
+      if (Array.isArray(tags)) {
+        processedTags = tags.map((tag: string) => String(tag).trim().toLowerCase()).filter(tag => tag.length > 0);
+      } else if (typeof tags === 'string') {
+        processedTags = [tags.trim().toLowerCase()].filter(tag => tag.length > 0);
+      }
+    }
+
     // Create article
     const article = new Article({
       title: title.trim(),
       content: content.trim(),
       excerpt: excerpt?.trim() || content.trim().substring(0, 200) + '...',
       author: authorId,
-      tags: tags ? tags.map((tag: string) => tag.trim().toLowerCase()) : [],
+      tags: processedTags,
       imageUrl: imageUrl?.trim(),
       status: status as 'draft' | 'published' | 'archived'
     });
