@@ -8,6 +8,8 @@ import { Server as SocketIOServer } from 'socket.io';
 import dotenv from 'dotenv';
 import { User, Article, Comment } from './models';
 import authRoutes from './routes/auth';
+import articleRoutes from './routes/articles';
+import uploadRoutes from './routes/upload';
 import { apiLimiter, securityLogger } from './middleware/security';
 
 dotenv.config();
@@ -29,9 +31,13 @@ const io = new SocketIOServer(server, {
 app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(securityLogger);
 app.use(apiLimiter);
+
+// Serve static files (uploads)
+app.use('/uploads', express.static('uploads'));
 
 // Health
 let mongoConnected = false;
@@ -41,6 +47,8 @@ app.get('/health', (_req: Request, res: Response) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/articles', articleRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Test endpoint to verify models
 app.get('/api/test-models', async (_req: Request, res: Response) => {
