@@ -32,7 +32,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
     // Add user info to request
     req.user = {
       ...payload,
-      id: user._id.toString()
+      id: (user._id as any).toString()
     };
 
     next();
@@ -78,7 +78,7 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
       if (user && user.isActive) {
         req.user = {
           ...payload,
-          id: user._id.toString()
+          id: (user._id as any).toString()
         };
       }
     }

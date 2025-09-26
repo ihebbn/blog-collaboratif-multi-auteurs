@@ -56,7 +56,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
     // Generate tokens
     const tokens = generateTokens({
-      userId: user._id.toString(),
+      userId: (user._id as any).toString(),
       email: user.email,
       role: user.role
     });
@@ -64,7 +64,7 @@ router.post('/register', async (req: Request, res: Response) => {
     res.status(201).json({
       message: 'User registered successfully',
       user: {
-        id: user._id,
+        id: user._id as any,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -121,7 +121,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
     // Generate tokens
     const tokens = generateTokens({
-      userId: user._id.toString(),
+      userId: (user._id as any).toString(),
       email: user.email,
       role: user.role
     });
@@ -129,7 +129,7 @@ router.post('/login', async (req: Request, res: Response) => {
     res.json({
       message: 'Login successful',
       user: {
-        id: user._id,
+        id: user._id as any,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -171,7 +171,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
 
     // Generate new tokens
     const tokens = generateTokens({
-      userId: user._id.toString(),
+      userId: (user._id as any).toString(),
       email: user.email,
       role: user.role
     });
@@ -218,7 +218,7 @@ router.get('/me', authenticateToken, async (req: Request, res: Response) => {
 
     res.json({
       user: {
-        id: user._id,
+        id: user._id as any,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
