@@ -11,6 +11,7 @@ import authRoutes from './routes/auth';
 import articleRoutes from './routes/articles';
 import uploadRoutes from './routes/upload';
 import adminRoutes from './routes/admin';
+import commentRoutes from './routes/comments';
 import { apiLimiter, securityLogger } from './middleware/security';
 
 dotenv.config();
@@ -51,6 +52,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Test endpoint to verify models
 app.get('/api/test-models', async (_req: Request, res: Response) => {
@@ -72,10 +74,45 @@ app.get('/api/test-models', async (_req: Request, res: Response) => {
   }
 });
 
-// Socket.io basic wiring
+// Socket.io real-time notifications
 io.on('connection', (socket) => {
-  socket.emit('connected', { id: socket.id });
+  console.log('Client connected:', socket.id);
+  
+  // Join article room for real-time updates
+  socket.on('join-article', (articleId) => {
+    socket.join(`article-${articleId}`);
+    console.log(`Client ${socket.id} joined article ${articleId}`);
+  });
+
+  // Leave article room
+  socket.on('leave-article', (articleId) => {
+    socket.leave(`article-${articleId}`);
+    console.log(`Client ${socket.id} left article ${articleId}`);
+  });
+
+  // Handle comment creation notifications
+  socket.on('comment-created', (data) => {
+    // Broadcast to all clients in the article room
+    socket.to(`article-${data.articleId}`).emit('new-comment', data);
+  });
+
+  // Handle comment updates
+  socket.on('comment-updated', (data) => {
+    socket.to(`article-${data.articleId}`).emit('comment-updated', data);
+  });
+
+  // Handle comment deletion
+  socket.on('comment-deleted', (data) => {
+    socket.to(`article-${data.articleId}`).emit('comment-deleted', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
 });
+
+// Make io available globally for use in controllers
+(global as any).io = io;
 
 // Global error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
