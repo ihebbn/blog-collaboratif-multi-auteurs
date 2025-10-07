@@ -1,0 +1,21 @@
+<header class="sticky top-0 z-20 bg-slate-900 text-white shadow-md">
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+    <a routerLink="/" class="font-semibold tracking-wide">MEAN Blog</a>
+    <nav class="flex items-center gap-2">
+      <a routerLink="/" routerLinkActive="bg-slate-800" class="nav-link">Home</a>
+      <a routerLink="/articles" routerLinkActive="bg-slate-800" class="nav-link">Articles</a>
+      <a *ngIf="isLoggedIn" routerLink="/my-articles" routerLinkActive="bg-slate-800" class="nav-link">My Articles</a>
+      <a *ngIf="isAdmin" routerLink="/admin" routerLinkActive="bg-slate-800" class="nav-link">Admin</a>
+      <a *ngIf="isLoggedIn" routerLink="/create-article" routerLinkActive="bg-slate-800" class="nav-link">Create</a>
+      <a *ngIf="!isLoggedIn" routerLink="/login" routerLinkActive="bg-slate-800" class="nav-link">Login</a>
+      <a *ngIf="!isLoggedIn" routerLink="/register" routerLinkActive="bg-slate-800" class="nav-link white">Register</a>
+      <a *ngIf="isLoggedIn" routerLink="/profile" routerLinkActive="bg-slate-800" class="nav-link">Profile</a>
+      <button *ngIf="isLoggedIn" class="ml-1 px-3 py-1 rounded-md bg-rose-500 hover:bg-rose-600" (click)="logout()">Logout</button>
+    </nav>
+  </div>
+</header>
+<main class="max-w-6xl mx-auto px-4 py-6">
+  <router-outlet />
+</main>
+
+

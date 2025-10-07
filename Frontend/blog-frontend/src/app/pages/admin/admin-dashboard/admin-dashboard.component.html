@@ -1,0 +1,45 @@
+<section class="space-y-4">
+  <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
+
+  <div *ngIf="loading" class="text-slate-500">Loading...</div>
+
+  <div *ngIf="!loading">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-left text-sm">
+        <thead class="text-slate-500">
+          <tr>
+            <th class="py-2 pr-4">User</th>
+            <th class="py-2 pr-4">Email</th>
+            <th class="py-2 pr-4">Role</th>
+            <th class="py-2 pr-4">Status</th>
+            <th class="py-2 pr-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of users" class="border-t border-slate-200">
+            <td class="py-2 pr-4">{{ u.firstName }} {{ u.lastName }}</td>
+            <td class="py-2 pr-4">{{ u.email }}</td>
+            <td class="py-2 pr-4">
+              <select [value]="u.role" (change)="changeRole(u, $any($event.target).value)" class="rounded-md border border-slate-300 px-2 py-1">
+                <option value="Reader">Reader</option>
+                <option value="Author">Author</option>
+                <option value="Editor">Editor</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </td>
+            <td class="py-2 pr-4">
+              <select [value]="u.status" (change)="changeStatus(u, $any($event.target).value)" class="rounded-md border border-slate-300 px-2 py-1">
+                <option value="active">active</option>
+                <option value="suspended">suspended</option>
+                <option value="pending">pending</option>
+              </select>
+            </td>
+            <td class="py-2 pr-4 text-slate-500 text-xs">Updated {{ u.updatedAt | date:'medium' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+

@@ -1,0 +1,6 @@
+.cta-primary { @apply px-5 py-2.5 rounded-md bg-slate-900 text-white hover:bg-slate-800 shadow-sm; }
+.cta-secondary { @apply px-5 py-2.5 rounded-md bg-white border border-slate-300 text-slate-900 hover:bg-slate-50 shadow-sm; }
+.card { @apply p-5 rounded-xl border border-slate-200 bg-white shadow-sm; }
+.card-title { @apply font-semibold; }
+.card-desc { @apply mt-1 text-sm text-slate-600; }
+
